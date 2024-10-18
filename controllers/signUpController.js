@@ -4,13 +4,13 @@ const { User } = require('../models');
 //Sign Up
 async function signUp(request, response) {
     try {
-        const { username, email, password } = request.body;
+        const { username, email, password, dateOfBirth } = request.body;
 
         //Password hashed with bcrypt
         const hashedPassword = await bcrypt.hash(password, 10);
 
         //Create user
-        const user = await User.create({username, email, password: hashedPassword});
+        const user = await User.create({username, email, password: hashedPassword, dateOfBirth});
 
         response.status(201).json({ message: 'User created', user });
     } catch (error) {
