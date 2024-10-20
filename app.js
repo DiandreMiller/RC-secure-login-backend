@@ -2,7 +2,6 @@
 const express = require('express');
 const cors = require('cors');
 const redis = require('redis');
-const sequelize = require('sequelize');
 
 //Configuration
 const app = express();
@@ -29,12 +28,17 @@ app.get('/', (request, response) => {
     response.send('Welcome to my red canary security challenge');
 })
 
-app.use('/sign-in', signInController);
-app.use('/sign-up', signUpController);
-app.use('/movies', moviesController);
+//Sending post request sends data in the body of the request which is more secure than 
+//sending data in the URL
+app.post('/sign-in', signInController);
+app.post('/sign-up', signUpController);
+
+
+app.get('/movies', moviesController.getMovies);
+app.get('/movies/:title', moviesController.getOneMovieByTitle);
 
 app.get('*', (request, response) => {
-    response.status(404).send('Page not found');
+    response.status(404).send('Page not found again');
 })
 
 module.exports = app;
