@@ -1,9 +1,10 @@
+//Configuration
+require('dotenv').config();
+
 //Dependency
 const app = require('./app');
 const sequelize = require('./config/database');
 
-//Configuration
-require('dotenv').config();
 
 //PORT
 const PORT = process.env.PORT || 3000;
