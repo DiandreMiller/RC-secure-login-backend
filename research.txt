@@ -58,3 +58,33 @@ Custom Validation:
 
 Joi allows for custom validation rules, enabling you to implement complex validation logic 
 tailored to your specific application needs.
+
+MFA
+
+The most secure multi-factor authentication (MFA) methods are phishing-resistant and combine 
+multiple forms of authentication: 
+
+FIDO/WebAuthn
+
+A widely available phishing-resistant authentication method that blocks attempts to log into 
+fake websites. FIDO keys are hardware keys that generate a secure code when pressed, and send 
+it directly to the device via USB or NFC. 
+
+Time-based One-Time Password (TOTP)
+
+A code that is only valid for a short period of time, usually 30–60 seconds. TOTP codes are 
+protected and difficult to intercept. 
+
+Security key
+
+A separate device that generates a secure code. Security keys are more secure than SMS-based 
+or app-based methods because they won't leave your accounts unprotected if your phone is lost 
+or stolen. 
+
+Biometrics
+Uses physical characteristics like your face, fingerprint, retina, or voice to identify you. 
+Biometrics is convenient and secure, but it can be impersonated or cloned using AI technology. 
+
+Combining multiple forms of MFA
+You can create a powerful authentication method by combining multiple forms of MFA, such as 
+non-reused passwords and biometrics alongside authenticator apps and push notifications. 
