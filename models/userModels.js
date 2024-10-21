@@ -34,6 +34,13 @@ User.init({
             len: [60, 200],
         }
     },
+    phoneNumber: {
+        type: DataTypes.STRING,
+        allowNull: true, 
+        validate: {
+            is: /^\+?[1-9]\d{1,14}$/ 
+        }
+    },
     failedLoginAttempts: {
         type: DataTypes.INTEGER,
         defaultValue: 0
