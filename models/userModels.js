@@ -31,7 +31,7 @@ User.init({
         type: DataTypes.STRING,
         allowNull: false,
         validate: {
-            len: [8, 32],
+            len: [60, 200],
         }
     },
     failedLoginAttempts: {
@@ -57,7 +57,7 @@ User.init({
     sequelize,               
     modelName: 'User',        
     tableName: 'users',       
-    timestamps: false        
+    timestamps: true,        
 });
 
 
