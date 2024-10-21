@@ -32,6 +32,12 @@ User.init({
         allowNull: false,
         validate: {
             len: [60, 200],
+            containsSpecialCharacters(value) {
+                const specialCharactersPattern = /[!@#$%^&*(),.?":{}|<>]/;
+                if(!specialCharactersPattern.test(value)) {
+                    throw new Error('Password must contain at least one special character');
+                }
+            }
         }
     },
     failedLoginAttempts: {
