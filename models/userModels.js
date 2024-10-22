@@ -2,7 +2,7 @@
 
 const { Model, DataTypes } = require('sequelize');
 const sequelize = require('../config/database'); 
-const {v4: uuidv4} = require('uuid');
+const { v4: uuidv4 } = require('uuid');
 
 class User extends Model {}
 
@@ -31,7 +31,7 @@ User.init({
         type: DataTypes.STRING,
         allowNull: false,
         validate: {
-            len: [60, 200],
+            len: [60, 500],
         }
     },
     phoneNumber: {
@@ -59,13 +59,25 @@ User.init({
         validate: {
             isDate: true, 
         }
-    }
+    },
+    
+    // is2FAEnabled: {
+    //     type: DataTypes.BOOLEAN,
+    //     defaultValue: false,
+    // },
+    // twoFactorSecret: {
+    //     type: DataTypes.STRING,
+    //     allowNull: true,
+    // },
+    // backupCodes: {
+    //     type: DataTypes.JSON,
+    //     allowNull: true,
+    // }
 }, {
     sequelize,               
     modelName: 'User',        
     tableName: 'users',       
     timestamps: true,        
 });
-
 
 module.exports = User;

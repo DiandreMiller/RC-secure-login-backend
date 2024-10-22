@@ -8,9 +8,9 @@ async function signUp(request, response) {
     try {
         console.log('Received request:', request.body);
         
-        const { username, email, password, dateOfBirth } = request.body;
+        const { username, email, password, dateOfBirth, phoneNumber } = request.body;
 
-        console.log('Incoming sign-up data:', { username, email, password, dateOfBirth });
+        console.log('Incoming sign-up data:', { username, email, password, dateOfBirth, phoneNumber });
 
         //Check to see if user exists
         const existingUser = await User.findOne({ where: { email } });
@@ -22,8 +22,10 @@ async function signUp(request, response) {
         //Password hashed with bcrypt
         const hashedPassword = await bcrypt.hash(password, 10);
 
+        console.log('Hashed Password:', hashedPassword);
+
         //Create user
-        const user = await User.create({username, email, password: hashedPassword, dateOfBirth});
+        const user = await User.create({username, email, password: hashedPassword, dateOfBirth, phoneNumber});
 
         response.status(201).json({ message: 'User created', user });
     } catch (error) {
