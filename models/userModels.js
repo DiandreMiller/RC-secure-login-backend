@@ -60,19 +60,22 @@ User.init({
             isDate: true, 
         }
     },
-    
-    // is2FAEnabled: {
-    //     type: DataTypes.BOOLEAN,
-    //     defaultValue: false,
-    // },
-    // twoFactorSecret: {
-    //     type: DataTypes.STRING,
-    //     allowNull: true,
-    // },
-    // backupCodes: {
-    //     type: DataTypes.JSON,
-    //     allowNull: true,
-    // }
+    webauthnid: {
+        type: DataTypes.STRING, 
+        allowNull: true,
+    },
+    webauthnpublickey: {
+        type: DataTypes.TEXT,
+        allowNull: true,
+    },
+    authCounter: {
+        type: DataTypes.INTEGER,
+        defaultValue: 0, 
+    },
+    challenge: {
+        type: DataTypes.STRING,
+        allowNull: true,
+    },
 }, {
     sequelize,               
     modelName: 'User',        
