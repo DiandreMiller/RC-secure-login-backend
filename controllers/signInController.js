@@ -4,21 +4,21 @@ const jwt = require('jsonwebtoken');
 const bcrypt = require('bcrypt');
 const User = require('../models/userModels');
 const { Op } = require('sequelize');
-const { server } = require('@passwordless-id/webauthn'); // Ensure you're importing the server correctly
+const { server } = require('@passwordless-id/webauthn');
 
 // Sign In
 async function signIn(request, response) {
     try {
         console.log('Received sign-in request body:', request.body);
 
-        const { identifier, password, webauthnCredential, challenge } = request.body;
+        const { identifier, password, webauthnCredential } = request.body;
 
         // Check if identifier is provided
         if (!identifier) {
             return response.status(400).json({ error: 'Email, username, or phone number is required' });
         }
 
-        console.log('Sign-in request received:', { identifier });
+        console.log('Sign-in request received:', identifier);
 
         // Check if user exists
         const user = await User.findOne({
@@ -56,6 +56,10 @@ async function signIn(request, response) {
 
         // Check if user is signing in with a password or WebAuthn
         if (password) {
+            // User is signing in with password
+            console.log('Password received for verification:', password);
+            console.log('Stored hashed password:', user.password);
+            
             // Check password
             const passwordMatch = await bcrypt.compare(password, user.password);
             if (!passwordMatch) {
@@ -69,22 +73,22 @@ async function signIn(request, response) {
             console.log('User logged in successfully with password:', user.username);
         } else if (webauthnCredential) {
             const challenge = user.challenge;
+            console.log('Challenge retrieved for user:', challenge);
+
             // Verify WebAuthn credential
             try {
                 const authenticationParsed = await server.verifyAuthentication(webauthnCredential, {
                     publicKey: user.webauthnPublicKey,
-                    challenge, 
-                    origin: request.headers.origin, 
-                    userVerified: true, 
-                    counter: user.authCounter, 
+                    challenge,
+                    origin: request.headers.origin,
+                    userVerified: true,
+                    counter: user.authCounter,
                 });
 
-                // The authenticationParsed is not used but logged for completeness
-                console.log('Parsed authentication result:', authenticationParsed);
-
-                // Successful login with WebAuthn
-                user.authCounter += 1; 
-                await user.save(); 
+                // Update the authentication counter with the value from authenticationParsed
+                user.authCounter = authenticationParsed.counter || user.authCounter + 1; // Fallback in case counter is not in the response
+                user.challenge = null; // Reset challenge after successful authentication
+                await user.save();
                 console.log('User logged in successfully with WebAuthn:', user.username);
             } catch (error) {
                 console.error('WebAuthn verification failed for identifier:', identifier, error);
@@ -97,7 +101,9 @@ async function signIn(request, response) {
         // Generate token
         const token = jwt.sign({ id: user.id }, process.env.JWT_SECRET, { expiresIn: '1h' });
 
-        response.status(200).json({ message: 'Sign in is a success', token });
+        // Send the response with the token and other relevant data
+        response.status(200).json({ message: 'Sign in is a success', token,
+             expiresIn: 3600, user: { id: user.id, username: user.username } });
 
     } catch (error) {
         console.error('Error during sign-in:', error);

@@ -1,8 +1,7 @@
 // const { server } = require('@passwordless-id/webauthn'); 
 const User = require('../models/userModels'); 
 const webAuthn = require('@passwordless-id/webauthn');
-
-// Register Passkey 
+const { Op } = require('sequelize');  // Import Op from Sequelize for conditional queries
 const crypto = require('crypto');
 
 // Function to generate a random challenge
@@ -11,60 +10,65 @@ const generateChallenge = () => {
 };
 
 exports.registerPasskey = async (request, response) => {
-
     try {
-        const { userId } = request.body; 
-        const user = await User.findByPk(userId);
-        console.log('User:', user);
-    
+        const { identifier } = request.body; 
+
+        // Find user by email or username
+        const user = await User.findOne({
+            where: {
+                [Op.or]: [{ email: identifier }, { username: identifier }]
+            }
+        });
+
         if (!user) {
+            console.log("User not found for identifier:", identifier);
             return response.status(404).json({ error: 'User not found' });
         }
-    
-    
+
+        const userId = user.id;
+
+        // Generate a challenge for the registration process
         const challenge = generateChallenge();
         user.challenge = challenge;
         await user.save();
 
         console.log("Generated Challenge (Backend):", challenge);
-    
+
         // Define the relying party object
         const rp = {
             name: 'Red Canary', 
-            id: process.env.EXPECTED_RPID, 
+            id: process.env.EXPECTED_RPID,  // Ensure EXPECTED_RPID is set in environment
         };
-    
-    
-         // Define acceptable public key credential parameters
-         const pubKeyCredParams = [
-            { type: 'public-key', alg: -7 },    
-            { type: 'public-key', alg: -257 }   
+
+        // Define acceptable public key credential parameters
+        const pubKeyCredParams = [
+            { type: 'public-key', alg: -7 },     // Algorithm identifier for ECDSA with SHA-256
+            { type: 'public-key', alg: -257 }    // Algorithm identifier for RSASSA-PKCS1-v1_5 with SHA-256
         ];
-    
+
         // Prepare the registration options
         const options = {
             rp,
             user: {
-                id: Buffer.from(String(userId)).toString('base64'),
+                id: Buffer.from(String(userId)).toString('base64'), // Encode user ID as base64
                 name: String(user.email),
                 displayName: String(user.username),
             },
-            challenge, 
+            challenge,
             pubKeyCredParams,
             attestation: 'direct',
-            timeout: 60000,
+            timeout: 60000,  
         };
-    
+
         // Send the options back to the frontend
         response.json(options);
 
     } catch (error) {
         console.error('Error registering passkey:', error.message);
-        console.error('Error registering passkey:', error);
-
         response.status(500).json({ error: 'An error occurred during registration' });
     }
 };
+
 
 // Verify Passkey
 exports.verifyPasskey = async (request, response) => {
@@ -82,7 +86,7 @@ exports.verifyPasskey = async (request, response) => {
         const user = await User.findOne({ where: { email } });
 
         if (!user) {
-            return response.status(404).json({ error: 'User not found' });
+            return response.status(404).json({ error: 'User not found 2' });
         }
 
         // Prepare the expected object for verification

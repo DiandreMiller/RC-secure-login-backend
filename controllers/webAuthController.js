@@ -1,4 +1,4 @@
-const { server } = require('@passwordless-id/webauthn'); // Import the server from the package
+const { server } = require('@passwordless-id/webauthn'); 
 
 // Controller function to generate registration options
 const generateRegistration = (request, response) => { 

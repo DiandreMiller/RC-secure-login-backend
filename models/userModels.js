@@ -1,8 +1,8 @@
 'use strict';
 
 const { Model, DataTypes } = require('sequelize');
-const sequelize = require('../config/database'); 
 const { v4: uuidv4 } = require('uuid');
+const { sequelize } = require('../config/database'); 
 
 class User extends Model {}
 
@@ -16,6 +16,7 @@ User.init({
     username: {
         type: DataTypes.STRING,
         allowNull: false,
+        unique: true,
         validate: {
             notEmpty: true,
         }
@@ -23,6 +24,7 @@ User.init({
     email: {
         type: DataTypes.STRING,
         allowNull: false,
+        unique: true,
         validate: {
             isEmail: true,
         }
@@ -37,6 +39,7 @@ User.init({
     phoneNumber: {
         type: DataTypes.STRING,
         allowNull: true, 
+        unique: true,
         validate: {
             is: /^\+?[1-9]\d{1,14}$/ 
         }
@@ -76,11 +79,15 @@ User.init({
         type: DataTypes.STRING,
         allowNull: true,
     },
+    hasregisteredpasskey: {
+        type: DataTypes.BOOLEAN,
+        defaultValue: false
+    }
 }, {
-    sequelize,               
-    modelName: 'User',        
-    tableName: 'users',       
-    timestamps: true,        
+    sequelize,              
+    modelName: 'User',      
+    tableName: 'users',     
+    timestamps: true,       
 });
 
 module.exports = User;
