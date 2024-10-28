@@ -17,19 +17,20 @@ redisClient.on('error', (error) => {
 });
 
 // Middleware
-app.use(cors());
-app.use(cors({ origin: 'http://localhost:3000' }));
+app.use(cors({ origin: process.env.FRONTEND_URL }));
 app.use(express.json());
 
 
 // Rate limiting
 const limiter = require('./middlewares/rateLimiters'); 
 
+// Incoming request logging
+const logIncomingRequest = require('./middlewares/incomingRequests');
+
 // Validations
 const signInValidation = require('./validations/userValidationsSignIn');
 const signUpValidation = require('./validations/userValidationsSignUp');
-// console.log('SignInValidation Type:', typeof signInValidation); 
-// console.log('SignUpValidation Type:', signUpValidation()); 
+ 
 
 
 // Controllers
@@ -43,28 +44,24 @@ const webauthnRoutes = require('./routes/webAuthnRoutes');
 
 
 //Check incoming requests
-app.use((request, res, next) => {
-    console.log(`Incoming request: ${request.method} ${request.url}`);
-    next();
-});
-
-
+app.use(logIncomingRequest);
 
 // Routes
 app.get('/', (request, response) => {
     response.send('Welcome to my red canary security challenge');
 });
 
+
+
 // Rate limiting and validation middleware to routes
-// app.post('/sign-in', limiter, signInValidation, signInController);
-app.post('/sign-in', async (request, response) => {
+app.post('/sign-in', limiter, async (request, response) => {
     console.log('Incoming request:', request.method, request.originalUrl);
-    // console.log('Request Body:', request.body);
+    console.log('Request Body:', request.body);
 
     // Validate the incoming request
     const { error } = signInValidation().validate(request.body); 
     if (error) {
-        console.log('Validation Error:', error.details);
+        console.log('Validation Error Sign In:', error.details);
         return response.status(400).json({ message: error.details[0].message });
     }
 
@@ -72,15 +69,15 @@ app.post('/sign-in', async (request, response) => {
     signInController(request, response);
 });
 
-// app.post('/sign-up', limiter, signUpController);
-app.post('/sign-up',  async (request, response) => {
+
+app.post('/sign-up', limiter,  async (request, response) => {
     console.log('Incoming request:', request.method, request.originalUrl);
     console.log('Request Body:', request.body);
 
     // Validate the incoming request
     const { error } = signUpValidation().validate(request.body);
     if (error) {
-        console.log('Validation Error:', error.details);
+        console.log('Validation Error Sign Up:', error.details);
         return response.status(400).json({ message: error.details[0].message });
     }
 
@@ -88,9 +85,9 @@ app.post('/sign-up',  async (request, response) => {
 });
 
 
-app.post('/register-passkey',  passkeyController.registerPasskey);
-app.post('/verify-passkey',  passkeyController.verifyPasskey);
-app.post('/authenticate-passkey',  authenticatePasskeyController.authenticatePasskey);
+app.post('/register-passkey', logIncomingRequest, limiter, passkeyController.registerPasskey);
+app.post('/verify-passkey', logIncomingRequest, limiter, passkeyController.verifyPasskey);
+app.post('/authenticate-passkey', logIncomingRequest, limiter, authenticatePasskeyController.authenticatePasskey);
 
 
 app.use('/api', webauthnRoutes);

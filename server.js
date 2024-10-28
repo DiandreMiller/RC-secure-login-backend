@@ -1,16 +1,15 @@
 // Configuration
 require('dotenv').config();
-const express = require('express'); // Ensure express is imported
-const session = require('express-session'); // Import express-session
+const session = require('express-session'); 
 const app = require('./app');
-const sequelize = require('./config/database');
+const { sequelize } = require('./config/database');
 
 // Set up session middleware
 app.use(session({
-    secret: process.env.SESSION_SECRET || 'your-default-secret', // Use an environment variable for the session secret
+    secret: process.env.SESSION_SECRET || 'your-default-secret', 
     resave: false,
     saveUninitialized: true,
-    cookie: { secure: process.env.NODE_ENV === 'production' } // Set secure cookies in production
+    cookie: { secure: process.env.NODE_ENV === 'production' } 
 }));
 
 // PORT

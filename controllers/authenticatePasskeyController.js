@@ -2,7 +2,6 @@
 
 const webauthn = require('@simplewebauthn/server');
 const User = require('../models/userModels');
-console.log('check', User);
 
 exports.authenticatePasskey = async (request, response) => {
     const { credential } = request.body; 
@@ -10,18 +9,23 @@ exports.authenticatePasskey = async (request, response) => {
     console.log('User id:', user);
 
     if (!user) {
-        return response.status(404).send('User not found');
+        return response.status(404).send('User not found 3');
     }
+
+    const expectedChallenge = user.challenge.replace(/=*$/, '').replace(/\+/g, '-').replace(/\//g, '_');
 
     // Verify the credential
     try {
         const verification = await webauthn.verifyAuthenticationResponse({
             credential,
-            expectedChallenge: user.challenge, 
+            // expectedChallenge: user.challenge, 
+            expectedChallenge: expectedChallenge,
             expectedOrigin: process.env.EXPECTED_ORIGIN, 
             expectedRPID: process.env.EXPECTED_RPID, 
             publicKey: user.publicKey, 
         });
+
+        console.log('Verification result:', verification)
 
         if (verification.verified) {
             // Successful authentication

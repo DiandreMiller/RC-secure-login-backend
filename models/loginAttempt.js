@@ -6,8 +6,6 @@ const {v4: uuidv4} = require('uuid');
 
 class LoginAttempt extends Model {}
 
-//LoginAttempts model
-
 LoginAttempt.init({
     id:{
         type: DataTypes.UUID,
