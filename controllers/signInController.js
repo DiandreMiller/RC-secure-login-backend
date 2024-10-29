@@ -61,7 +61,7 @@ async function signIn(request, response) {
             console.log('Stored hashed password:', user.password);
             
             // Check password
-            const passwordMatch = await bcrypt.compare(password, user.password);
+            const passwordMatch = await bcrypt.compare(password.trim(), user.password.trim());
             if (!passwordMatch) {
                 await updateFailedAttempts(user, identifier);
                 return response.status(401).json({ error: 'Invalid login credentials' });
