@@ -17,7 +17,19 @@ redisClient.on('error', (error) => {
 });
 
 // Middleware
-app.use(cors({ origin: process.env.FRONTEND_URL }));
+// app.use(cors({ origin: process.env.FRONTEND_URL }));
+const allowedOrigins = [process.env.FRONTEND_URL, process.env.FRONTEND_URL_DEPLOYED];
+
+app.use(cors({
+  origin: function (origin, callback) {
+    if (allowedOrigins.includes(origin) || !origin) {
+      callback(null, true);
+    } else {
+      callback(new Error('Not allowed by CORS'));
+    }
+  }
+}));
+
 app.use(express.json());
 
 
