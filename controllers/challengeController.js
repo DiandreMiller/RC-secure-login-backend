@@ -9,7 +9,7 @@ const generateChallenge = (request, response) => {
     // Store the challenge in the session
     request.session.challenge = challenge;
 
-    // Store the username in the session for later use (if needed)
+    // Store the username in the session for later 
     request.session.username = username;
 
     // Send the challenge back to the client

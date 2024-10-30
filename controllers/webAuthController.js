@@ -18,7 +18,7 @@ const generateRegistration = (request, response) => {
     const options = {
         rp,
         user: {
-            id: username, // Ideally, user ID should be a unique identifier
+            id: username, 
             name: username,
             displayName: username,
         },

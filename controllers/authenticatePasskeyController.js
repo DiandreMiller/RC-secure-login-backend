@@ -17,8 +17,7 @@ exports.authenticatePasskey = async (request, response) => {
     // Verify the credential
     try {
         const verification = await webauthn.verifyAuthenticationResponse({
-            credential,
-            // expectedChallenge: user.challenge, 
+            credential, 
             expectedChallenge: expectedChallenge,
             expectedOrigin: process.env.EXPECTED_ORIGIN, 
             expectedRPID: process.env.EXPECTED_RPID, 

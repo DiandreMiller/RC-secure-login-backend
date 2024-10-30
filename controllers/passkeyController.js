@@ -1,4 +1,4 @@
-// const { server } = require('@passwordless-id/webauthn'); 
+// Registering and verifying a passkey using WebAuthn.
 const User = require('../models/userModels'); 
 const webAuthn = require('@passwordless-id/webauthn');
 const { Op } = require('sequelize');  // Import Op from Sequelize for conditional queries
@@ -37,7 +37,7 @@ exports.registerPasskey = async (request, response) => {
         // Define the relying party object
         const rp = {
             name: 'Red Canary', 
-            id: process.env.EXPECTED_RPID,  // Ensure EXPECTED_RPID is set in environment
+            id: process.env.EXPECTED_RPID,  
         };
 
         // Define acceptable public key credential parameters
@@ -50,7 +50,7 @@ exports.registerPasskey = async (request, response) => {
         const options = {
             rp,
             user: {
-                id: Buffer.from(String(userId)).toString('base64'), // Encode user ID as base64
+                id: Buffer.from(String(userId)).toString('base64'),
                 name: String(user.email),
                 displayName: String(user.username),
             },

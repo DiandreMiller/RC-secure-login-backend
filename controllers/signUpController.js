@@ -49,7 +49,7 @@ async function signUp(request, response) {
         }
 
         // Hash password
-        const saltRounds = 10; // Can adjust or set from config
+        const saltRounds = 10; 
         const hashedPassword = await bcrypt.hash(password, saltRounds);
         console.log('Hashed Password:', hashedPassword);
 
