@@ -69,8 +69,8 @@ app.get('/', (request, response) => {
 // Rate limiting and validation middleware to routes
 app.post('/sign-in', limiter,
     [
-        body('identifier').trim().notEmpty().withMessage('Email, username, or phone number is required'),
-        body('password').trim().notEmpty().withMessage('Password is required')
+        body('identifier').trim().escape().notEmpty().withMessage('Email, username, or phone number is required'),
+        body('password').trim().escape().notEmpty().withMessage('Password is required')
     ], 
     async (request, response) => {
     // console.log('Incoming request:', request.method, request.originalUrl);
@@ -90,11 +90,11 @@ app.post('/sign-in', limiter,
 
 app.post('/sign-up', limiter, 
     [
-    body('username').trim().notEmpty().withMessage('Username is required'),
-    body('email').isEmail().withMessage('Valid email is required'),
-    body('password').trim().notEmpty().withMessage('Password is required'),
+    body('username').trim().escape().notEmpty().withMessage('Username is required'),
+    body('email').trim().isEmail().escape().withMessage('Valid email is required'),
+    body('password').trim().escape().notEmpty().withMessage('Password is required'),
     body('dateOfBirth').isDate().withMessage('Valid date of birth is required'),
-    body('phoneNumber').optional().isMobilePhone().withMessage('Valid phone number is required')
+    body('phoneNumber').trim().optional().escape().isMobilePhone().withMessage('Valid phone number is required')
 ], 
 async (request, response) => {
     // console.log('Incoming request:', request.method, request.originalUrl);
