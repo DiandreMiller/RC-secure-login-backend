@@ -20,6 +20,8 @@ function createSignUpSchema() {
 
         email: Joi.string()
             .email({ minDomainSegments: 2, tlds: { allow: ['com', 'net', 'org', 'edu', 'info'] } })
+            .normalize()
+            .trim()
             .required()
             .messages({
                 'string.email': 'Email must be a valid email address',
@@ -27,6 +29,7 @@ function createSignUpSchema() {
             }),
 
         password: Joi.string()
+            .trim()
             .pattern(new RegExp('^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[!@#$%^&*()_+\\-=\\[\\]{};:\'",.<>?]).{8,32}$'))
             .required()
             .messages({
@@ -57,8 +60,8 @@ function createSignUpSchema() {
                 'string.pattern.base': 'Phone number must be in E.164 format and contain 1 to 15 digits',
             }),
 
-        webauthnid: Joi.string().allow('').optional(), 
-        webauthnpublickey: Joi.string().allow('').optional(),
+        webauthnid: Joi.string().trim().allow('').optional(), 
+        webauthnpublickey: Joi.string().trim().allow('').optional(),
     });
 }
 
