@@ -123,7 +123,7 @@ app.post('/verify-passkey', logIncomingRequest, limiter, passkeyController.verif
 app.post('/authenticate-passkey', logIncomingRequest, limiter, authenticatePasskeyController.authenticatePasskey);
 
 
-app.use('/api', webauthnRoutes);
+// app.use('/api', webauthnRoutes);
 
 app.get('/movies', moviesController.getMovies);
 app.get('/movies/:title', moviesController.getOneMovieByTitle);

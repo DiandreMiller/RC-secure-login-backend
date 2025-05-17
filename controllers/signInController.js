@@ -86,7 +86,7 @@ async function signIn(request, response) {
                 });
 
                 // Update the authentication counter with the value from authenticationParsed
-                user.authCounter = authenticationParsed.counter || user.authCounter + 1; // Fallback in case counter is not in the response
+                user.authCounter = authenticationParsed.counter || user.authCounter + 1; 
                 user.challenge = null; // Reset challenge after successful authentication
                 await user.save();
                 console.log('User logged in successfully with WebAuthn:', user.username);

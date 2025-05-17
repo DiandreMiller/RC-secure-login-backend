@@ -1,14 +1,14 @@
-// webauthnRoutes.js
+// // webauthnRoutes.js
 
-const express = require('express');
-const passkeyController = require('../controllers/passkeyController'); 
+// const express = require('express');
+// const passkeyController = require('../controllers/passkeyController'); 
 
-const router = express.Router();
+// const router = express.Router();
 
-// Route for generating a registration challenge
-router.post('/generate-registration', passkeyController.registerPasskey);
+// // Route for generating a registration challenge
+// router.post('/generate-registration', passkeyController.registerPasskey);
 
-// Route for verifying the passkey
-router.post('/verify-passkey', passkeyController.verifyPasskey);
+// // Route for verifying the passkey
+// router.post('/verify-passkey', passkeyController.verifyPasskey);
 
-module.exports = router;
+// module.exports = router;

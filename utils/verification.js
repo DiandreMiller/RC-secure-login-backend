@@ -31,7 +31,7 @@ async function verifyUserAuthentication({ data, expectedChallenge, expectedOrigi
     } catch (error) {
         throw new Error(`Verification failed: ${error.message}`);
     }
-}
+};
 
 module.exports = {
     verifyUserAuthentication,
