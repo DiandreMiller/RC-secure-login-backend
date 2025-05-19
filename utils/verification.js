@@ -34,5 +34,5 @@ async function verifyUserAuthentication({ data, expectedChallenge, expectedOrigi
 };
 
 module.exports = {
-    verifyUserAuthentication,
+    verifyUserAuthentication
 };
